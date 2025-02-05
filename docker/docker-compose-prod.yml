@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+   fullstack-ecommerce-app:
+    image: fernandocanabarroahnert/fullstack-ecommerce-app
+    restart: always
+    build: 
+      context: ../
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports: 
+      - 8080:8080
+    networks:
+      - dev-network
+networks:
+  dev-network:
+    driver: bridge
