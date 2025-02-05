@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fernandocanabarro.fullstack_ecommerce_app.projections.IdProjection;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -34,7 +36,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "products")
 @EqualsAndHashCode(of = "id")
-public class Product {
+public class Product implements IdProjection<Long>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
