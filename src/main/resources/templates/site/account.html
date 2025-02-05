@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta</title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!--Javascript do Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <header th:replace="~{fragments/header::header}"></header>
+    <main>
+        <section class="container-fluid" id="breadcrumb-section">
+            <div class="container">
+                <nav>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <li class="breadcrumb-item active"><a th:href="@{/my-account}">Minha Conta</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+
+        <section class="container" id="account-section">
+            <h2>Minha Conta</h2>
+            <div class="row">
+
+                <div class="account-tabs col-12 col-lg-4">
+                    <p class="account-tab mb-0" data-target="#dashboard"
+                    th:classappend="${#fields.hasErrors('newPasswordDto.currentPassword') or #fields.hasErrors('newPasswordDto.newPassword') or #fields.hasErrors('newPasswordDto.newPasswordAck') 
+                    or #fields.hasErrors('userUpdateInfoDto.fullName') or #fields.hasErrors('userUpdateInfoDto.email') or #fields.hasErrors('userUpdateInfoDto.cpf') or #fields.hasErrors('userUpdateInfoDto.birthDate')} ? '' : 'active-tab'">
+                        <i class="bi bi-house-gear-fill"></i> Dashboard
+                    </p>
+                    <p class="account-tab mb-0" data-target="#discount-coupons">
+                        <i class="bi bi-ticket-perforated-fill"></i> Meus Cupons
+                    </p>
+                    <p class="account-tab mb-0" data-target="#redeem-coupon">
+                        <i class="bi bi-percent"></i> Resgatar Cupom
+                    </p>
+                    <p class="account-tab mb-0" data-target="#orders">
+                        <i class="bi bi-bag-fill"></i> Pedidos
+                    </p>
+                    <p class="account-tab mb-0" data-target="#update-profile"
+                    th:classappend="${#fields.hasErrors('userUpdateInfoDto.fullName') or #fields.hasErrors('userUpdateInfoDto.email') or #fields.hasErrors('userUpdateInfoDto.cpf') or #fields.hasErrors('userUpdateInfoDto.birthDate')} ? 'active-tab'">
+                        <i class="bi bi-person-fill-gear"></i> Atualizar Informações
+                    </p>
+                    <p class="account-tab mb-0" data-target="#adresses">
+                        <i class="bi bi-geo-alt-fill"></i> Meus Endereços
+                    </p>
+                    <p class="account-tab mb-0" data-target="#credit-cards">
+                        <i class="bi bi-person-vcard-fill"></i> Cartões de Crédito
+                    </p>
+                    <p class="account-tab mb-0" data-target="#update-password"
+                    th:classappend="${#fields.hasErrors('newPasswordDto.currentPassword') or #fields.hasErrors('newPasswordDto.newPassword') or #fields.hasErrors('newPasswordDto.newPasswordAck')} ? 'active-tab'">
+                        <i class="bi bi-person-fill-lock"></i> Alterar minha Senha
+                    </p>
+                    <a th:href="@{/logout}" class="account-tab mb-0" data-target="#logout">
+                        <i class="bi bi-box-arrow-right"></i> Sair
+                    </a>
+                </div>
+
+                <div class="content-tabs col-12 col-lg-8">
+                    <div class="content-tab" id="dashboard"
+                    th:classappend="${#fields.hasErrors('newPasswordDto.currentPassword') or #fields.hasErrors('newPasswordDto.newPassword') or #fields.hasErrors('newPasswordDto.newPasswordAck') or #fields.hasErrors('couponCodeDTO.code')
+                    or #fields.hasErrors('userUpdateInfoDto.fullName') or #fields.hasErrors('userUpdateInfoDto.email') or #fields.hasErrors('userUpdateInfoDto.cpf') or #fields.hasErrors('userUpdateInfoDto.birthDate')} ? '' : 'active-tab'">
+                        <h3 class="tab-header" th:text="'Olá, ' + ${user.fullName}"></h3>
+                        <div class="tab-body">
+                            <p class="tab-description">
+                                Através do Dashboard da sua conta, você pode facilmente conferir e visualizar seus
+                                pedidos,
+                                alterar as informações da sua conta, bem como sua senha, e gerenciar seus endereços e
+                                cartões de crédito.
+                            </p>
+                            <div class="user-info-row row">
+                                <div class="col-6 mb2">
+                                    <b>Nome Completo:</b>
+                                    <p class="mb-0" th:text="' ' + ${user.fullName}"></p>
+                                </div>
+                                <div class="col-6 mb2">
+                                    <b>E-mail:</b>
+                                    <p class="mb-0" th:text="' ' + ${user.email}"></p>
+                                </div>
+                                <div class="col-6 mb2">
+                                    <b>CPF:</b>
+                                    <p class="mb-0" th:text="' ' + ${user.cpf}"></p>
+                                </div>
+                                <div class="col-6 mb2">
+                                    <b>Data de Nascimento:</b>
+                                    <p class="mb-0" th:text="' ' + ${user.birthDate}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-tab" id="discount-coupons">
+                        <h3 class="tab-header">Meus Cupons</h3>
+                        <div class="tab-body d-flex flex-column">
+                            <ul class="row gy-3 p-0 flex-column align-items-center">
+                                <li class="card address-card p-0 col-11 col-lg-10" th:each="coupon, stat : ${coupons}">
+                                    <div class="card-header d-flex align-items-center justify-content-start">
+                                        <p class="mb-0" th:text="'#' + ${stat.index + 1}"></p>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="col-6 mb-2">
+                                            <b>Descrição:</b>
+                                            <p class="mb-0" th:text="' ' + ${coupon.description}"></p>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <b>Código:</b>
+                                            <p class="mb-0" th:text="' ' + ${coupon.code}"></p>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <b>Desconto:</b>
+                                            <p class="mb-0" th:text="' ' + ${coupon.discountPercentage} + '%'"></p>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <b>Expiração:</b>
+                                            <p class="mb-0" th:text="' ' + ${coupon.expiresAt}"></p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="content-tab" id="redeem-coupon"
+                        th:classappend="${#fields.hasErrors('couponCodeDTO.code')} ? 'active-tab'">
+                        <h3 class="tab-header">Resgatar Cupom</h3>
+                        <div class="tab-body d-flex flex-column align-items-center">
+                            <form th:action="@{/add-coupon}" class="col-10 col-md-8 col-xl-6" method="post" th:object="${couponCodeDTO}">
+                                <label for="code" class="form-label">Código do Cupom</label>
+                                <input type="text" th:field="*{code}" id="code" name="code" class="form-control">
+                                <p class="text-danger mb-2" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                                <button class="btn-green mt-3" type="submit">Resgatar</button>
+                            </form>                            
+                        </div>
+                    </div>
+                    <div class="content-tab" id="orders">
+                        <h3 class="tab-header">Meus Pedidos</h3>
+                        <div class="tab-body">
+                            <ul class="p-0 row gy-3 justify-content-center">
+                                <li class="card col-11 col-lg-10 p-0" th:each="order : ${orders}">
+                                    <div class="card-header">
+                                        <b th:text="'Pedido #' + ${order.id}"></b>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="col-6">
+                                            <b>Data:</b>
+                                            <p th:text="${order.moment}"></p>
+                                        </div>
+                                        <div class="col-6">
+                                            <b>Status:</b>
+                                            <p th:text="${order.status}"></p>
+                                        </div>
+                                        <div class="col-6">
+                                            <b>Valor Total:</b>
+                                            <p th:text="'R$' + ${order.totalValue}"></p>
+                                        </div>
+                                        <div class="col-6">
+                                            <b>Tipo de Pagamento:</b>
+                                            <p th:text="${order.paymentType}"></p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-end">
+                                        <button type="button" class="btn btn-primary me-2"
+                                        data-bs-toggle="modal" th:attr="data-bs-target=${'#show-items-'.concat(order.id)}">
+                                        Ver Itens
+                                        </button>
+                                        <div class="modal fade" th:id="${'show-items-'.concat(order.id)}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 th:text="'Itens do Pedido ' + ${order.id}" class="modal-title"></h5>
+                                                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body d-flex flex-column">
+                                                        <ul class="p-0 row gy-3 w-100 mb-2">
+                                                            <li class="card p-0" th:each="item,stat : ${order.items}">
+                                                                <div class="card-header d-flex align-items-center justify-content-between">
+                                                                    <p th:text="'Produto #' + ${stat.index + 1}" class="mb-0"></p> 
+                                                                    <a class="btn btn-success" th:href="@{/products/{id}(id=${item.productId})}" title="Visualizar Detalhes do Produto">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="card-body ps-2 pe-0 py-3 d-flex">
+                                                                    <img th:src="${item.image}" alt="" class="img-fluid col-4">
+                                                                    <div class="row ps-3">
+                                                                        <div class="col-6">
+                                                                            <b>Nome:</b>
+                                                                            <p th:text="${item.name}"></p>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <b>Preço:</b>
+                                                                            <p th:text="'R$' + ${item.price}"></p>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <b>Quantidade:</b>
+                                                                            <p th:text="${item.quantity}"></p>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <b>Subtotal:</b>
+                                                                            <p th:text="'R$' + ${item.getSubTotal()}"></p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                        <div th:if="${order.discountPercentage != '0.0'}" class="w-100 d-flex justify-content-end">
+                                                            <div class="bg-danger p-2 order-discount-div">
+                                                                <span th:text="'-' + ${order.discountPercentage}"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer d-flex justify-content-end">
+                                                        <b>Total:</b><span class="ms-2" th:text="' R$' + ${order.totalValue}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-secondary me-3"
+                                            data-bs-toggle="modal" th:attr="data-bs-target=${'#show-address-'.concat(order.id)}">
+                                            Ver Endereço
+                                        </button>
+                                        <div class="modal fade" th:id="${'show-address-'.concat(order.id)}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 th:text="'Endereço #' + ${order.id}" class="modal-title"></h5>
+                                                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body row">
+                                                        <div class="col-4">
+                                                            <b>Logradouro:</b>
+                                                            <p th:text="${order.address.logradouro}"></p>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <b>Bairro:</b>
+                                                            <p th:text="${order.address.bairro}"></p>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <b>Número:</b>
+                                                            <p th:text="${order.address.numero}"></p>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <b>CEP:</b>
+                                                            <p th:text="${order.address.cep}"></p>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <b>Cidade:</b>
+                                                            <p th:text="${order.address.cidade}"></p>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <b>Estado:</b>
+                                                            <p th:text="${order.address.estado}"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="content-tab" id="update-profile"
+                    th:classappend="${#fields.hasErrors('userUpdateInfoDto.fullName') or #fields.hasErrors('userUpdateInfoDto.email') or #fields.hasErrors('userUpdateInfoDto.cpf') or #fields.hasErrors('userUpdateInfoDto.birthDate')} ? 'active-tab'">
+                        <h3 class="tab-header">Atualizar minhas informações</h3>
+                        <p class="text-muted p-2 ps-4 mb-0">*Obs.: Ao alterar suas informações, você terá que efetuar seu login novamente</p>
+                        <div class="tab-body d-flex justify-content-center">
+                            <form th:action="@{/auth/update-info}" method="post" th:object="${userUpdateInfoDto}" class="col-7">
+                                 <label for="fullName" class="form-label">Nome Completo</label>
+                                <input type="text" class="form-control" id="fullName" name="fullName" th:field="*{fullName}" placeholder="Nome do Usuário">
+                                <p class="text-danger mb-2" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></p>
+
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="email" name="email" th:field="*{email}" placeholder="E-mail do Usuário">
+                                <p class="text-danger mb-2" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+                                <label for="cpf" class="form-label">CPF</label>
+                                <input type="text" class="form-control" id="cpf" name="cpf" th:field="*{cpf}" placeholder="CPF do Usuário">
+                                <p class="text-danger mb-2" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></p>
+
+                                <label for="birthDate" class="form-label">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="birthDate" name="birthDate" th:field="*{birthDate}" placeholder="Data de Nascimento">
+                                <p class="text-danger mb-2" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
+                                <button type="submit" class="btn-green mt-3">Atualizar</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="content-tab" id="adresses">
+                        <h3 class="tab-header">Meus Endereços</h3>
+                        <div class="tab-body d-flex flex-column">
+
+                            <ul class="row gy-3 p-0 flex-column align-items-center">
+                                <li class="card address-card p-0 col-11 col-lg-10" th:each="address, stat : ${addresses}">
+                                    <div class="card-header d-flex align-items-center justify-content-between">
+                                        <p class="mb-0" th:text="'#' + ${stat.index + 1}"></p>
+                                        <div class="address-header-btn-row">
+                                            <a th:href="@{/addresses/{id}/update(id=${address.id})}" class="btn btn-primary" title="Editar Endereço"><i class="bi bi-pencil-square"></i></a>
+                                            <button class="btn btn-danger" title="Deletar Endereço"
+                                                th:attr="data-bs-toggle='modal',data-bs-target=${'#delete-confirmation-'.concat(address.id)}">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                            <div class="modal fade" th:id="${'delete-confirmation-'.concat(address.id)}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Você tem certeza disso?</h5>
+                                                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h6 class="mt-3">Esta ação <strong>não pode</strong> ser
+                                                                desfeita</h6>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a th:href="@{/addresses/{id}/delete(id=${address.id})}"
+                                                                class="btn btn-danger">Sim</a>
+                                                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="col-4 mb-2">
+                                            <b>Logradouro:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.logradouro}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Bairro:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.bairro}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Número:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.numero}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>CEP:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.cep}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Cidade:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.cidade}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Estado:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.estado}"></p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <a th:href="@{/addresses/create}" type="button" class="btn-green" style="align-self: flex-end;">
+                                Adicionar <i class="bi bi-plus-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="content-tab" id="credit-cards">
+                        <h3 class="tab-header">Meus Cartões de Crédito</h3>
+                        <div class="tab-body d-flex flex-column">
+                            <ul class="row p-0 gy-3 flex-column align-items-center">
+                                <li class="card p-0 col-11 col-lg-10" th:each="creditCard, stat : ${creditCards}">
+                                    <div class="card-header d-flex align-items-center justify-content-between">
+                                        <p class="mb-0" th:text="'#' + ${stat.index + 1}"></p>
+                                        <button class="btn btn-danger" title="Deletar Cartão de Crédito"
+                                            th:attr="data-bs-toggle='modal',data-bs-target=${'#credit-card-delete-confirmation-'.concat(creditCard.id)}">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                        <div class="modal fade" th:id="${'credit-card-delete-confirmation-'.concat(creditCard.id)}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Você tem certeza disso?</h5>
+                                                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h6 class="mt-3">Esta ação <strong>não pode</strong> ser desfeita</h6>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a th:href="@{/credit-cards/{id}/delete(id=${creditCard.id})}"
+                                                            class="btn btn-danger">Sim</a>
+                                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="col-6 mb-2">
+                                            <b>Nome do Titular:</b>
+                                            <p class="mb-0" th:text="' ' + ${creditCard.holderName}"></p>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <b>Número do Cartão:</b>
+                                            <p class="mb-0" th:text="' ' + ${creditCard.cardNumber}"></p>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <b>Data de Expiração:</b>
+                                            <p class="mb-0" th:text="' ' + ${creditCard.expirationDate}"></p>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <b>Bandeira:</b>
+                                            <p class="mb-0" th:text="' ' + ${creditCard.brand}"></p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <a th:href="@{/credit-cards/create}" class="btn-green" style="align-self: flex-end;">Adicionar <i class="bi bi-plus-lg"></i></a>
+                        </div>
+                    </div>
+                    <div class="content-tab" id="update-password"
+                        th:classappend="${#fields.hasErrors('newPasswordDto.currentPassword') or #fields.hasErrors('newPasswordDto.newPassword') or #fields.hasErrors('newPasswordDto.newPasswordAck')} ? 'active-tab'">
+                        <h3 class="tab-header">Atualizar minha senha</h3>
+                        <div class="tab-body d-flex justify-content-center">
+                            <form th:action="@{/auth/update-password}" method="post" th:object="${newPasswordDto}" class="col-9 col-lg-6">
+
+                                <div class="form-floating mt-2">
+                                    <input type="password" class="form-control" name="currentPassword" id="currentPassword"
+                                        placeholder="Insira sua senha atual" th:field="*{currentPassword}">
+                                    <label for="currentPassword" class="form-label">Insira sua senha atual</label>
+                                </div>
+                                <p th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}" class="text-danger mt-2 mb-0"></p>
+
+                                <div class="form-floating mt-2">
+                                    <input type="password" class="form-control password-input" name="password" id="password"
+                                        placeholder="Insira sua nova senha" th:field="*{newPassword}">
+                                    <span class="input-group-text password-toggle">
+                                        <i class="bi bi-eye-slash password-toggle-icon"></i>
+                                    </span>
+                                    <label for="password" class="form-label">Insira sua nova senha</label>
+                                </div>
+                                <p th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="text-danger mt-2 mb-0"></p>
+        
+                                <div class="form-floating mt-2">
+                                    <input type="password" class="form-control password-input" name="password-ack" id="password-ack"
+                                        placeholder="Repita sua nova senha" th:field="*{newPasswordAck}">
+                                    <span class="input-group-text password-ack-toggle">
+                                        <i class="bi bi-eye-slash password-ack-toggle-icon"></i>
+                                    </span>
+                                    <label for="password-ack" class="form-label">Repita sua nova senha</label>
+                                </div>
+                                <p th:if="${#fields.hasErrors('newPasswordAck')}" th:errors="*{newPasswordAck}" class="text-danger mt-2 mb-0"></p>
+                                <button type="submit" class="btn-green mt-3">Atualizar Senha</button>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </section>
+
+
+
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+    <script th:src="@{/js/login-register.js}"></script>
+
+    <script>
+        let contentTabs = document.querySelectorAll(".content-tab");
+        let accountTabs = document.querySelectorAll('.account-tab');
+        accountTabs.forEach(accountTab => {
+            accountTab.addEventListener("click", () => {
+                accountTabs.forEach(item => item.classList.remove('active-tab'));
+                accountTab.classList.add('active-tab');
+                const contentTabTarget = accountTab.dataset.target;
+                const contentTab = document.querySelector(contentTabTarget);
+                contentTabs.forEach(item => item.classList.remove('active-tab'));
+                contentTab.classList.add("active-tab");
+            })
+        })
+    </script>
+</body>
+
+</html>

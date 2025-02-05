@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!--Javascript do Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <header th:replace="~{fragments/header::header}"></header>
+    <hr class="m-0">
+    <main id="register-login-form-main">
+        <section class="container">
+            <div class="row form-box-container"
+            th:classappend="${#fields.hasErrors('register.fullName') or #fields.hasErrors('register.email') or #fields.hasErrors('register.cpf') or #fields.hasErrors('register.password') or #fields.hasErrors('register.passwordAck') ? ' active' : ''}">
+                <div class="form-box d-flex flex-column login p-0">
+                    <div th:if="${param.logout}" class="alert alert-success alert-dismissible fade show col-8">
+                        Logout efetuado com sucesso
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show col-8">
+                        Credenciais Inválidas ou Conta ainda não foi ativada
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <form th:action="@{/login}" method="post" class="login-form">
+                        <h1 class="mb-4">Login</h1>
+                        <div class="form-floating mt-2">
+                            <input type="email" class="form-control" name="username" id="username"
+                                placeholder="Insira seu e-mail">
+                            <label for="username" class="form-label">Insira seu e-mail</label>
+                        </div>
+                        <div class="form-floating mt-2">
+                            <input type="password" class="form-control password-input" name="password" id="password"
+                                placeholder="Insira sua senha">
+                            <span class="input-group-text password-toggle">
+                                <i class="bi bi-eye-slash password-toggle-icon"></i>
+                            </span>
+                            <label for="password" class="form-label">Insira sua senha</label>
+                        </div>
+                        <p><a th:href="@{/password-recover}">Esqueci minha senha</a></p>
+                        <button type="submit" class="btn btn-primary">Entrar</button>
+                    </form>
+                </div>
+
+                <div class="form-box register p-0">
+                    <form th:action="@{/auth/register}" method="post" class="register-form" th:object="${register}">
+                        <h1 class="mb-4">Cadastro</h1>
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control" name="fullname" id="fullname"
+                                placeholder="Insira seu nome completo" th:field="*{fullName}">
+                            <label for="fullname" class="form-label">Insira seu nome completo</label>
+                        </div>
+                        <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger mt-2 mb-0"></p>
+
+                        <div class="form-floating mt-2">
+                            <input type="email" class="form-control" name="email" id="email"
+                                placeholder="Insira seu e-mail" th:field="*{email}">
+                            <label for="email" class="form-label">Insira seu e-mail</label>
+                        </div>
+                        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger mt-2 mb-0"></p>
+
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control" name="cpf" id="cpf"
+                                placeholder="Insira seu CPF" th:field="*{cpf}">
+                            <label for="cpf" class="form-label">Insira seu CPF</label>
+                        </div>
+                        <p th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="text-danger mt-2 mb-0"></p>
+
+                        <label for="birthDate" class="form-label mt-2" style="align-self: flex-start;">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="birthDate" name="birthDate" th:field="*{birthDate}">
+
+                        <div class="form-floating mt-2">
+                            <input type="password" class="form-control password-input" name="password-register" id="password-register"
+                                placeholder="Insira sua senha" th:field="*{password}">
+                            <span class="input-group-text password-register-toggle">
+                                <i class="bi bi-eye-slash password-register-toggle-icon"></i>
+                            </span>
+                            <label for="password-register" class="form-label">Insira sua senha</label>
+                        </div>
+                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger mt-2 mb-0"></p>
+
+                        <div class="form-floating mt-2">
+                            <input type="password" class="form-control password-input" name="password-ack" id="password-ack"
+                                placeholder="Repita sua senha" th:field="*{passwordAck}">
+                            <span class="input-group-text password-ack-toggle">
+                                <i class="bi bi-eye-slash password-ack-toggle-icon"></i>
+                            </span>
+                            <label for="password-ack" class="form-label">Repita sua senha</label>
+                        </div>
+                        <p th:if="${#fields.hasErrors('passwordAck')}" th:errors="*{passwordAck}" class="text-danger mt-2 mb-0"></p>
+
+                        <button type="submit" class="btn btn-primary mt-2">Cadastrar</button>
+                    </form>
+                </div>
+
+                <div class="toggle-box p-0">
+                    <div class="toggle-panel toggle-left">
+                        <h1>Olá, seja bem-vindo!</h1>
+                        <p>Ainda não tem uma conta?</p>
+                        <button type="button" class="btn btn-primary btn-register">Cadastre-se</button>
+                    </div>
+                    <div class="toggle-panel toggle-right">
+                        <h1>Bem-vindo de volta!</h1>
+                        <p>Já tem uma conta?</p>
+                        <button type="button" class="btn btn-primary btn-login">Efetuar Login</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+    <hr class="m-0">
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+
+    <script th:src="@{/js/login-register.js}"></script>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+</body>
+
+</html>

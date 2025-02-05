@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div id="toast-box">
+        <div th:class="${productHasBeenAddedToCart} ? 'toast show' : 'd-none'">
+            <i class="bi bi-check-circle-fill"></i> Produto adicionado ao Carrinho
+        </div>
+        <div th:class="${productHasBeenAddedToWishList} ? 'toast show' : 'd-none'">
+            <i class="bi bi-check-circle-fill"></i> Produto adicionado à Lista de Desejos
+        </div>
+    </div>
+    <header th:replace="~{fragments/header::header}"></header>
+    <main>
+        <section class="container-fluid" id="breadcrumb-section">
+            <div class="container">
+                <nav>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <li class="breadcrumb-item active"><a th:href="@{/products-grid}">Shop</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+
+        <section class="container products-container" id="products-shop">
+            <h2>Produtos</h2>
+            <div class="row justify-content-between">
+
+                <div class="aside col-2">
+                    <h3>Filtrar por</h3>
+                    <form th:action="@{/products-grid/paginated}" method="get">
+                        <input type="hidden" name="page" th:value="${currentPage}">
+                        <input type="hidden" name="sort" th:value="${sort}">
+                        <input type="hidden" name="sortDirection" th:value="${sortDirection}">
+
+                        <h4>Nome</h4>
+                        <input type="text" class="form-control" name="name">
+
+                        <h4>Categorias</h4>
+                        <ul class="ps-0 row">
+                            <li th:each="category : ${categories}">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" th:id="${category.name}" name="categories" th:value="${category.id}"
+                                        th:checked="${selectedCategories != null && selectedCategories.contains(category.id)}">
+                                    <label th:for="${category.name}" class="form-check-label" th:text="${category.name}"></label>
+                                </div>
+                            </li>
+                        </ul>
+                        <h4>Marcas</h4>
+                        <ul class="ps-0 row">
+                            <li th:each="brand : ${brands}">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" th:id="${brand.name}" name="brands" th:value="${brand.id}"
+                                        th:checked="${selectedBrands != null && selectedBrands.contains(brand.id)}">
+                                    <label th:for="${brand.name}" class="form-check-label" th:text="${brand.name}"></label>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <label for="maxPrice" class="form-label">Preço Mínimo</label>
+                        <input type="number" class="form-control" name="minPrice">
+
+                        <label for="maxPrice" class="form-label mt-2">Preço Máximo</label>
+                        <input type="number" class="form-control" name="maxPrice">
+
+                        <button class="btn btn-success mt-3" type="submit">Filtrar</button>
+                    </form>
+                </div>
+
+                <div class="row products-list gx-5 gy-3 col-10">
+                    <div class="sort-row">
+                        <a th:if="${sortDirection.equals('desc')}" class="btn-green" 
+                            th:href="@{'/products-grid/paginated?page=' + ${currentPage} + 
+                            '&sort=price&sortDirection=' + ${reverseSortDirection} + 
+                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                            title="Ordenar por preço ascendente">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </a>
+                        <a th:if="${sortDirection.equals('asc')}" class="btn-green"
+                            th:href="@{'/products-grid/paginated?page=' + ${currentPage} + 
+                            '&sort=price&sortDirection=' + ${reverseSortDirection} + 
+                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                            (${queryString} != '' ? '&' + ${queryString} : '')" 
+                            title="Ordenar por preço decrescente">
+                            <i class="bi bi-graph-down-arrow"></i>
+                        </a>
+                        <a th:if="${sortDirection.equals('asc')}" class="btn-green"
+                            th:href="@{'/products-grid/paginated?page=' + ${currentPage} + 
+                            '&sort=name&sortDirection=' + ${reverseSortDirection} + 
+                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                            title="Ordenar por nome de Z-A">
+                            <i class="bi bi-sort-alpha-down-alt"></i>
+                        </a>
+                        <a th:if="${sortDirection.equals('desc')}" class="btn-green"
+                            th:href="@{'/products-grid/paginated?page=' + ${currentPage} + 
+                            '&sort=name&sortDirection=' + ${reverseSortDirection} + 
+                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                            title="Ordenar por nome de A-Z">
+                            <i class="bi bi-sort-alpha-down"></i>
+                        </a>
+                    </div>
+                    <div class="card stretched-link product-card" th:each="product : ${products}" th:href="@{/products/{id}(id=${product.id})}"
+                        th:attr="onclick='window.location.href=\'/products/' + ${product.id} + '\''">
+                        <img th:src="${product.image}" alt="" class="card-img-top">
+                        <span class="card-offer-discount" th:if="${product.isInOffer}" th:text="${product.discountPercentage} + '% OFF'"></span>
+                        <div class="card-body">
+                            <p class="card-subtitle mb-2" th:text="${product.categories}"></p>
+                            <h4 class="card-title" th:text="${product.name}"></h4>
+                            <div class="product-stars-rating d-flex align-items-center justify-content-start">
+                                <th:block th:if="${product.averageRating < 0.1}">
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 0.5 && product.averageRating < 1}">
+                                    <i class="bi bi-star-half"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 1 && product.averageRating < 1.5}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 1.5 && product.averageRating < 2.0}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 2 && product.averageRating < 2.5}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 2.5 && product.averageRating < 3.0}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 3.0 && product.averageRating < 3.5}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 3.5 && product.averageRating < 4.0}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 4.0 && product.averageRating < 4.3}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 4.3 && product.averageRating < 4.8}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-half"></i>
+                                </th:block>
+                                <th:block th:if="${product.averageRating >= 4.8}">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </th:block>
+                            </div>
+                            <div class="price-div" th:if="${product.isInOffer}">
+                                <span class="card-text price" th:text="'R$' + ${product.offerPrice}"></span>
+                                <span class="card-text old-price" th:text="${product.price}"></span>
+                            </div>
+                            <div class="price-div" th:if="!${product.isInOffer}">
+                                <span class="card-text price" th:text="'R$' + ${product.price}"></span>
+                            </div>
+                        </div>
+                        <div class="card-icons-row d-flex justify-content-end">
+                            <a th:href="@{/wishlists/{productId}/add(productId=${product.id})}" class="wishlist-icon"
+                                title="Adicionar produto à Lista de Desejos">
+                                <i class="bi bi-heart"></i>
+                            </a>
+                            <a th:href="@{/carts/{productId}/add/{quantity}(productId=${product.id},quantity=1)}" class="cart-icon"
+                                title="Adicionar produto ao Carrinho">
+                                <i class="bi bi-bag-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagination-div d-flex flex-column align-items-center mt-4 mt-lg-2">
+                    <p th:text="'Listando ' + ${totalPageItems} + ' itens de ' + ${totalItems} + ' | Página ' + ${currentPage} + ' de ' + ${totalPages}"></p>
+                    <nav>
+                        <ul class="pagination">
+                            <li th:class="${currentPage > 1} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{'/products-grid/paginated?page=1' + 
+                                    '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                    '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                    (${queryString} != '' ? '&' + ${queryString} : '')" 
+                                    class="page-link">
+                                    <--
+                                </a>
+                            </li>
+                            <li th:class="${currentPage > 1} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{'/products-grid/paginated?page=' + ${currentPage - 1} + 
+                                    '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                    '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                    (${queryString} != '' ? '&' + ${queryString} : '')"  
+                                    class="page-link">
+                                    <
+                                </a>
+                            </li>
+
+                            <th:block th:if="${totalPages <= 10}">
+                                <li th:each="i : ${#numbers.sequence(1,totalPages)}" class="page-item" th:classappend="${i == currentPage} ? 'active'">
+                                    <a th:href="@{'/products-grid/paginated?page=' + ${i} +
+                                        '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                        '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                        (${queryString} != '' ? '&' + ${queryString} : '')" 
+                                        class="page-link" th:text="${i}"></a>
+                                </li>
+                            </th:block>
+
+                            <th:block th:if="${totalPages > 10}">
+
+                                <th:block th:if="${currentPage <= 5 || currentPage >= totalPages -4}">
+                                    <li th:each="i : ${#numbers.sequence(1,5)}" class="page-item" th:classappend="${i == currentPage} ? 'active'">
+                                        <a th:href="@{'/products-grid/paginated?page=' + ${i} +
+                                            '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                                            class="page-link" th:text="${i}"></a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a th:href="@{'/products-grid/paginated?page=6' + 
+                                            '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                                            class="page-link" >...</a>
+                                    </li>
+                                    <li th:each="i : ${#numbers.sequence(totalPages - 4, totalPages)}" class="page-item"
+                                        th:classappend="${i == currentPage} ? 'active'">
+                                        <a th:href="@{'/products-grid/paginated?page=' + ${i} +
+                                            '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                                            class="page-link" th:text="${i}"></a>
+                                    </li>
+                                </th:block>
+
+                                <th:block th:if="${currentPage > 5 && currentPage < totalPages - 4}">
+                                    <li class="page-item">
+                                        <a th:href="@{'/products-grid/paginated?page=' + ${currentPage - 5} +
+                                        '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                        '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                        (${queryString} != '' ? '&' + ${queryString} : '')"
+                                            class="page-link">...</a>
+                                    </li>
+                                    <li th:each="i : ${#numbers.sequence(currentPage - 4, currentPage + 4)}" class="page-item"
+                                        th:classappend="${i == currentPage} ? 'active'">
+                                        <a th:href="@{'/products-grid/paginated?page=' + ${i} +
+                                            '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                                            class="page-link" th:text="${i}"></a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a th:href="@{'/products-grid/paginated?page=' + ${currentPage + 5} +
+                                            '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                            '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                            (${queryString} != '' ? '&' + ${queryString} : '')"
+                                            class="page-link">...</a>
+                                    </li>
+                                </th:block>
+                            </th:block>
+
+                            <li th:class="${currentPage < totalPages} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{'/products-grid/paginated?page=' + ${currentPage + 1} +
+                                    '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                    '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                    (${queryString} != '' ? '&' + ${queryString} : '')"
+                                    class="page-link">></a>
+                            </li>
+                            <li th:class="${currentPage < totalPages} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{'/products-grid/paginated?page=' + ${totalPages} +
+                                '&sort=' + ${sort} + '&sortDirection=' + ${sortDirection} + 
+                                '&name=' + ${name} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}} +
+                                (${queryString} != '' ? '&' + ${queryString} : '')"
+                                    class="page-link">--></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+
+    <script>
+        let toastBox = document.querySelector("#toast-box")
+        let toast = toastBox.querySelector(".show");
+        setTimeout(() => {
+            toast.remove();
+        },5000);
+    </script>
+</body>
+</html>

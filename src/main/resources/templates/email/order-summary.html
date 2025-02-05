@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumo do Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .container p, .container a {
+            font-size: 1.25rem;
+        }
+        .download-div {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .pdf-download-btn {
+            padding: 1rem;
+            text-align: center;
+            gap: .625rem;
+            width: 30%;
+            background-color: #dc3545;
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: .4s ease-in-out;
+            text-decoration: none;
+            font-size: 1.325rem;
+        }
+        .pdf-download-btn:hover {
+            background-color: #b61223;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="'Resumo do Pedido #' + ${orderId}"></h1>
+    <hr>
+    <p class="greeting" th:text="'Olá ' + ${username} + ','"></p>
+    <p>Seu pedido foi aprovado! Clique no botão abaixo para visualizar/imprimir o relatório do seu pedido:</p>
+    <div class="download-div">
+        <a class="pdf-download-btn" th:href="${baseUrl} + '/orders/order-summary/' + ${orderId} + '/pdf'" style="color: white;">Visualizar PDF</a>
+    </div>
+</div>
+</body>
+</html>

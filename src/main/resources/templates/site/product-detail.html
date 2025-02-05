@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name}"></title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
+    <!--Javascript do Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <div id="toast-box">
+        <div th:class="${productHasBeenAddedToCart} ? 'toast show' : 'd-none'">
+            <i class="bi bi-check-circle-fill"></i> Produto adicionado ao Carrinho
+        </div>
+    </div>
+
+    <header th:replace="~{fragments/header::header}"></header>
+    <main>
+        <section class="container-fluid" id="breadcrumb-section">
+            <div class="container">
+                <nav>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/products-grid}">Shop</a></li>
+                        <li class="breadcrumb-item active"><a href="#" th:text="${product.name}"></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+
+        <section class="container" id="product-detail">
+            <div class="row justify-content-center">
+
+                <div class="img-col col-12 col-lg-5 row mb-4 mb-lg-0">
+                    <a data-fancybox th:href="${product.images[0].image}" class="p-0">
+                        <img th:src="${product.images[0].image}" alt="" class="img-fluid main-img">
+                    </a>
+                    <div class="d-flex p-0">
+                        <a data-fancybox th:each="image, stat : ${product.images}" th:if="${stat.index > 0}"
+                            th:href="${image.image}" class="col-4 p-0">
+                            <img th:src="${image.image}" alt="" class="img-fluid">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="detail-col col-12 col-lg-7 ps-lg-5">
+                    <h2 th:text="${product.name}"></h2>
+
+                    <div class="product-stars-rating d-flex align-items-center justify-content-start">
+                        <th:block th:if="${product.averageRating < 0.1}">
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 0.5 && product.averageRating < 1}">
+                            <i class="bi bi-star-half"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 1 && product.averageRating < 1.5}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 1.5 && product.averageRating < 2.0}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 2 && product.averageRating < 2.5}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 2.5 && product.averageRating < 3.0}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 3.0 && product.averageRating < 3.5}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 3.5 && product.averageRating < 4.0}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 4.0 && product.averageRating < 4.3}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 4.3 && product.averageRating < 4.8}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                        </th:block>
+                        <th:block th:if="${product.averageRating >= 4.8}">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </th:block>
+                        <p class="ms-3 mb-0" th:text="${product.averageRatingResponse}"></p>
+                    </div>
+
+                    <h4 th:text="'Marca: ' + ${product.brand.name}"></h4>
+                    <p class="mb-2" th:text="${product.categories}"></p>
+                    <span class="text-muted" th:text="${product.soldQuantity} + ' vendidos'"></span>
+                    <hr>
+                    <div class="price-div" th:if="${product.isInOffer}">
+                        <h3 class="price" th:text="'R$' + ${product.offerPrice}"></h3>
+                        <span class="old-price" th:text="'R$' + ${product.price}"></span>
+                        <div class="bg-danger p-2 order-discount-div">
+                            <span th:text="'-' + ${product.discountPercentage} + '%'"></span>
+                        </div>
+                    </div>
+                    <div class="price-div" th:if="!${product.isInOffer}">
+                        <h3 class="price" th:text="'R$' + ${product.price}"></h3>
+                    </div>
+                    <hr>
+                    <p th:text="${product.description}"></p>
+                    <div class="btn-div">
+                        <button type="button" class="btn btn-green"
+                            data-bs-toggle="modal" data-bs-target="#send-order-request-modal">
+                            Comprar agora
+                        </button>
+                        <div class="modal fade" id="send-order-request-modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Selecionar quantidade</h5>
+                                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/orders/create}" method="get" class="col-7 d-flex flex-column align-items-center">
+                                            <input type="hidden" name="productId" th:value="${product.id}">
+                                            <input required type="number" name="quantity" id="quantity" class="form-control mb-3" min="1" placeholder="Quantidade">
+                                            <button type="submit" class="btn btn-green">Comprar agora</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a th:href="@{/carts/{productId}/add/{quantity}(productId=${product.id},quantity=1)}" class="cart-icon btn-alt">
+                            <i class="bi bi-bag-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="container" id="product-detail-ratings">
+            <div class="row justify-content-start">
+                <div class="product-ratings col-12 col-lg-7 col-xl-6 d-flex flex-column">
+                    <h2>Avaliações do Produto</h2>
+
+                    <button sec:authorize="isAuthenticated()" type="button" class="btn-green mb-3" style="align-self: flex-end;" data-bs-toggle="collapse" data-bs-target="#rate-product-form">
+                        Avaliar Produto <i class="bi bi-star-fill"></i>
+                    </button>
+                   <form th:action="@{/products/{id}/rate(id=${product.id})}" class="default-form collapse mt-4" id="rate-product-form"
+                        th:object="${ratingDto}" method="post"
+                        th:classappend="${#fields.hasErrors()} ? 'show' : ''">
+                        <p class="text-center">Nota do Produto</p>
+                        <fieldset class="star-rating">
+                            <input type="radio" th:field="*{rating}" name="rating" id="star5" value="5">
+                            <label for="star5" class="full" title="5 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star4half" value="4.5">
+                            <label for="star4half" class="half" title="4.5 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star4" value="4">
+                            <label for="star4" class="full" title="3 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star3half" value="3.5">
+                            <label for="star3half" class="half" title="3.5 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star3" value="3">
+                            <label for="star3" class="full" title="3 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star2half" value="2.5">
+                            <label for="star2half" class="half" title="2.5 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star2" value="2">
+                            <label for="star2" class="full" title="2 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star1half" value="1.5">
+                            <label for="star1half" class="half" title="1.5 Estrelas"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star1" value="1">
+                            <label for="star1" class="full" title="1 Estrela"></label>
+
+                            <input type="radio" th:field="*{rating}" name="rating" id="star0half" value="0.5">
+                            <label for="star0half" class="half" title="0.5 Estrela"></label>
+                        </fieldset>
+                        <p class="text-danger mb-0 text-center" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></p>
+
+                        <label for="description" class="form-label">Descrição da Avaliação</label>
+                        <textarea name="description" id="description" th:field="*{description}" rows="15" cols="15" class="form-control"></textarea>
+                        <button class="btn btn-primary" type="submit">Enviar</button>
+                    </form>
+                    <ul class="product-ratings-list row gy-3 ps-0 justify-content-center">
+                        <li th:each="rating : ${ratings}" class="card p-0 col-10">
+                            <div class="card-header d-flex justify-content-start align-items-center">
+                                <i class="bi bi-person-circle me-4"></i>
+                                <div class="card-rating-user-info d-flex flex-column">
+                                    <b><p class="mb-1" th:text="${rating.fullName}"></p></b>
+                                    <span class="text-muted" th:text="${rating.email}"></span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2" th:text="${rating.description}"></p>
+                                <span class="text-muted" th:text="'Nota: ' + ${rating.rating} + '/5'"></span>
+                            </div>
+                        </li>
+                    </li>
+                   </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+    <script>
+        let toastBox = document.querySelector("#toast-box")
+        let toast = toastBox.firstElementChild;
+        setTimeout(() => {
+            toast.remove();
+        },5000);
+    </script>
+</body>
+
+</html>

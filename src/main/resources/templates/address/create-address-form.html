@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Endereço</title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <header th:replace="~{fragments/header::header}"></header>
+    <hr class="m-0">
+    <main class="default-form-section">
+        <h2>Cadastrar novo Endereço</h2>
+        <section class="container">
+            <div class="row align-items-center justify-content-center">
+                <form th:action="@{/addresses}" method="post" th:object="${addressDto}" class="default-form col-10 col-md-7 col-lg-5 address-form">
+                    <div class="d-flex justify-content-start mb-2">
+                        <div class="form-floating me-3 d-flex flex-column">
+                            <input class="form-control" name="cep" type="text" id="cep"
+                                value="" size="10" maxlength="9"
+                                onblur="pesquisacep(this.value);" placeholder="CEP"
+                                th:field="*{cep}" />
+                            <label class="form-label">CEP</label>
+                            <p class="text-danger my-2" th:if="${#fields.hasErrors('cep')}" th:errors="*{cep}"></p>
+                        </div>
+                        <div class="form-floating d-flex flex-column">
+                            <input class="form-control" name="numero" type="text"
+                                id="numero" placeholder="Número" th:field="*{numero}" />
+                            <label class="form-label">Número</label>
+                            <p class="text-danger my-2" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start mb-2">
+                        <div class="form-floating me-3">
+                            <input class="form-control" name="rua" type="text" id="rua"
+                                size="60" placeholder="Rua" th:field="*{logradouro}" />
+                            <label class="form-label">Rua</label>
+                            <p class="text-danger my-2" th:if="${#fields.hasErrors('logradouro')}" th:errors="*{logradouro}"></p>
+                        </div>
+                        <div class="form-floating">
+                            <input class="form-control" name="bairro" type="text"
+                                id="bairro" size="40" placeholder="Bairro"
+                                th:field="*{bairro}" />
+                            <label class="form-label">Bairro</label>
+                            <p class="text-danger my-2" th:if="${#fields.hasErrors('bairro')}" th:errors="*{bairro}"></p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start mb-2">
+                        <div class="form-floating me-3">
+                            <input class="form-control" name="cidade" type="text"
+                                id="cidade" size="40" placeholder="Cidade"
+                                th:field="*{cidade}" />
+                            <label class="form-label">Cidade</label>
+                            <p class="text-danger my-2" th:if="${#fields.hasErrors('cidade')}" th:errors="*{cidade}"></p>
+                        </div>
+                        <div class="form-floating">
+                            <input class="form-control" name="uf" type="text" id="uf"
+                                size="2" placeholder="Estado" th:field="*{estado}" />
+                            <label class="form-label">Estado</label>
+                            <p class="text-danger my-2" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></p>
+                        </div>
+                    </div>
+                
+                    <button type="submit" class="btn-green">Adicionar</button>
+                </form>
+            </div>
+        </section>
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+    <hr class="m-0">
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+    <script th:src="@{/js/via-cep.js}"></script>
+</body>
+
+</html>

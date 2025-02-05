@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Pedidos</title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!--Javascript do Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <header th:replace="~{fragments/header::header}"></header>
+    <hr class="m-0">
+    <main>
+        <section class="container management-section">
+            <div class="row align-items-center justify-content-center">
+                <h2>Gerenciamento de Pedidos</h2> 
+
+                <div class="actions-row d-flex align-items-center justify-content-between p-0">
+                    <form th:action="@{/admin/orders-management/paginated}" 
+                        method="get" class="col-4 order-date-form">
+                        <input type="hidden" name="page" value=1>
+                        <input type="hidden" name="sort" value="id">
+                        <input type="hidden" name="sortDirection" value="asc">
+                        <div>
+                            <label for="minDate" class="form-label">Data início</label>
+                            <input type="date" name="minDate" class="form-control">
+                        </div>
+                        <div>
+                            <label for="maxDate" class="form-label">Data fim</label>
+                            <input type="date" name="maxDate" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Filtrar</button>                        
+                    </form>
+                    <div class="export-row d-flex">
+                        <a th:href="@{/admin/orders/excel/export}" class="btn btn-success export-btn">Exportar para Excel <i class="bi bi-box-arrow-in-up"></i></a>
+                        <a th:href="@{/admin/orders/csv/export}" class="btn btn-secondary export-btn">Exportar para CSV <i class="bi bi-box-arrow-in-up"></i></a>
+                        <button data-bs-toggle="modal" data-bs-target="#order-pdf-modal" class="btn btn-danger export-btn">Exportar para PDF <i class="bi bi-box-arrow-in-up"></i></button>
+                        <div class="modal fade" id="order-pdf-modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Parâmetros da Consulta</h5>
+                                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form th:action="@{/admin/orders/pdf/export}" class="row justify-content-center" method="get">
+                                            <!-- DATA, VALOR, STATUS, TIPO DE PAGAMENTO-->
+                                             <div class="col-12 row justify-content-around mb-3">
+                                                <div class="col-5">
+                                                    <label for="pdfMinDate" class="form-label"><b>Data Início</b></label>
+                                                    <input type="date" id="pdfMinDate" name="minDate" class="form-control">
+                                                 </div>
+                                                 <div class="col-5">
+                                                    <label for="pdfMaxDate" class="form-label"><b>Data Fim</b></label>
+                                                    <input type="date" id="pdfMaxDate" name="maxDate" class="form-control">
+                                                 </div>
+                                             </div>
+
+                                             <div class="col-12 row justify-content-around mb-3">
+                                                <div class="col-5">
+                                                    <p class="mb-2"><b>Valor Mínimo</b></p>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" id="minValue" name="minValue" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-5">
+                                                    <p class="mb-2"><b>Valor Máximo</b></p>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">R$</span>
+                                                        <input type="number" id="maxValue" name="maxValue" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 row justify-content-around">
+                                                <div class="col-5">
+                                                    <p class="mb-2"><b>Status do Pedido</b></p>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="waitingPayment" id="WAITING_PAYMENT" value="WAITING_PAYMENT">
+                                                        <label for="WAITING_PAYMENT" class="form-check-label">Aguardando Pagamento</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="paid" id="PAID" value="PAID">
+                                                        <label for="PAID" class="form-check-label">Pago</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="shipped" id="SHIPPED" value="SHIPPED">
+                                                        <label for="SHIPPED" class="form-check-label">Enviado</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="delivered" id="DELIVERED" value="DELIVERED">
+                                                        <label for="DELIVERED" class="form-check-label">Entregue</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="canceled" id="CANCELED" value="CANCELED">
+                                                        <label for="CANCELED" class="form-check-label">Cancelado</label>
+                                                    </div>
+                                                 </div>
+    
+                                                 <div class="col-5">
+                                                    <p class="mb-2"><b>Forma de Pagamento</b></p>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="cartao" id="CARTAO" value="CARTAO">
+                                                        <label for="CARTAO" class="form-check-label">CARTÃO</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="boleto" id="BOLETO" value="BOLETO">
+                                                        <label for="BOLETO" class="form-check-label">BOLETO</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="pix" id="PIX" value="PIX">
+                                                        <label for="PIX" class="form-check-label">PIX</label>
+                                                    </div>
+                                                 </div>
+                                            </div>
+                                            <div class="row justify-content-center mt-3">
+                                                <button type="submit" class="btn-green">Filtrar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col" style="width: 5%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=id,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Id
+                                    </a>
+                                </th>
+                                <th scope="col" style="width: 20%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=user.email,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Email
+                                    </a>
+                                </th>
+                                <th scope="col" style="width: 12.5%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=moment,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Data
+                                    </a>    
+                                </th>
+                                <th scope="col" style="width: 15%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=orderStatus,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Status
+                                    </a>
+                                </th>
+                                <th scope="col" style="width: 10%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=payment.totalValue,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Valor
+                                    </a>
+                                </th>
+                                <th scope="col" style="width: 10%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=discountCoupon.discountPercentage,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Desconto
+                                    </a>
+                                </th>
+                                <th scope="col" style="width: 15%; text-align: center;">
+                                    <a th:href="@{/admin/orders-management/paginated(page=${currentPage},sort=payment.paymentType,sortDirection=${reverseSortDirection},minDate=${minDate},maxDate=${maxDate})}">
+                                        Tipo de Pagamento
+                                    </a>
+                                </th>
+                                <th scope="col" style="width: 17.5%; text-align: center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <th scope="row" th:text="${order.id}" style="text-align: center;"></th>
+                                <td th:text="${order.userEmail}"></td>
+                                <td th:text="${order.moment}"></td>
+                                <td th:text="${order.status}"></td>
+                                <td th:text="'R$' + ${order.totalValue}" style="text-align: center;"></td>
+                                <td th:text="${order.discountPercentage}" style="text-align: center;"></td>
+                                <td th:text="${order.paymentType}" style="text-align: center;"></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary mb-2"
+                                        data-bs-toggle="modal" th:attr="data-bs-target=${'#show-items-'.concat(order.id)}">
+                                        Ver Itens
+                                    </button>
+                                    <div class="modal fade" th:id="${'show-items-'.concat(order.id)}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 th:text="'Itens do Pedido ' + ${order.id}" class="modal-title"></h5>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body d-flex flex-column">
+                                                    <ul class="p-0 row gy-3 w-100">
+                                                        <li class="card p-0" th:each="item,stat : ${order.items}">
+                                                            <div class="card-header d-flex align-items-center justify-content-between">
+                                                                <p th:text="'Produto #' + ${stat.index + 1}" class="mb-0"></p> 
+                                                                <a class="btn btn-success" th:href="@{/products/{id}(id=${item.productId})}" title="Visualizar Detalhes do Produto">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </a>
+                                                            </div>
+                                                            <div class="card-body d-flex">
+                                                                <img th:src="${item.image}" alt="" class="img-fluid col-4">
+                                                                <div class="row ps-3">
+                                                                    <div class="col-6">
+                                                                        <b>Nome:</b>
+                                                                        <p th:text="${item.name}"></p>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <b>Preço:</b>
+                                                                        <p th:text="'R$' + ${item.price}"></p>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <b>Quantidade:</b>
+                                                                        <p th:text="${item.quantity}"></p>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <b>Subtotal:</b>
+                                                                        <p th:text="'R$' + ${item.getSubTotal()}"></p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <div th:if="${order.discountPercentage != '0.0'}" class="w-100 d-flex justify-content-end">
+                                                        <div class="bg-danger p-2 order-discount-div">
+                                                            <span th:text="'-' + ${order.discountPercentage}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-end">
+                                                    <b>Total:</b><span class="ms-2" th:text="' R$' + ${order.totalValue}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-toggle="modal" th:attr="data-bs-target=${'#show-address-'.concat(order.id)}">
+                                        Ver Endereço
+                                    </button>
+                                    <div class="modal fade" th:id="${'show-address-'.concat(order.id)}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 th:text="'Endereço #' + ${order.id}" class="modal-title"></h5>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body row">
+                                                    <div class="col-4">
+                                                        <b>Logradouro:</b>
+                                                        <p th:text="${order.address.logradouro}"></p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <b>Bairro:</b>
+                                                        <p th:text="${order.address.bairro}"></p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <b>Número:</b>
+                                                        <p th:text="${order.address.numero}"></p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <b>CEP:</b>
+                                                        <p th:text="${order.address.cep}"></p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <b>Cidade:</b>
+                                                        <p th:text="${order.address.cidade}"></p>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <b>Estado:</b>
+                                                        <p th:text="${order.address.estado}"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-div d-flex flex-column align-items-center">
+                    <p th:text="'Listando ' + ${totalPageItems} + ' de ' + ${totalItems} + ' itens | Página ' + ${currentPage} + ' de ' + ${totalPages}"></p>
+                    <nav>
+                        <ul class="pagination">
+
+                            <li th:class="${currentPage > 1} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{/admin/orders-management/paginated(page=1,sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                    class="page-link">
+                                    <--
+                                </a>
+                            </li>
+                            <li th:class="${currentPage > 1} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{/admin/orders-management/paginated(page=${currentPage - 1},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                    class="page-link">
+                                    <
+                                </a>
+                            </li>
+
+                            <th:block th:if="${totalPages <= 10}">
+                                <li th:each="i : ${#numbers.sequence(1,totalPages)}" class="page-item"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/admin/orders-management/paginated(page=${i},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                        th:text="${i}"></a>
+                                </li>
+                            </th:block>
+
+                            <th:block th:if="${totalPages > 10}">
+
+                                <th:block th:if="${currentPage <= 5 || currentPage >= totalPages -4}">
+                                    <li th:each="i : ${#numbers.sequence(1,5)}" class="page-item" th:classappend="${i == currentPage} ? 'active'">
+                                        <a th:href="@{/admin/orders-management/paginated(page=${i},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                            class="page-link" th:text="${i}"></a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a th:href="@{/admin/orders-management/paginated(page=6,sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                            class="page-link" >...</a>
+                                    </li>
+                                    <li th:each="i : ${#numbers.sequence(totalPages - 4, totalPages)}" class="page-item"
+                                        th:classappend="${i == currentPage} ? 'active'">
+                                        <a th:href="@{/admin/orders-management/paginated(page=${i},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                            class="page-link" th:text="${i}"></a>
+                                    </li>
+                                </th:block>
+
+                                <th:block th:if="${currentPage > 5 && currentPage < totalPages - 4}">
+                                    <li class="page-item">
+                                        <a th:href="@{/admin/orders-management/paginated(page=${currentPage - 5},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                            class="page-link">...</a>
+                                    </li>
+                                    <li th:each="i : ${#numbers.sequence(currentPage - 4, currentPage + 4)}" class="page-item"
+                                        th:classappend="${i == currentPage} ? 'active'">
+                                        <a th:href="@{/admin/orders-management/paginated(page=${i},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                            class="page-link" th:text="${i}"></a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a th:href="@{/admin/orders-management/paginated(page=${currentPage + 5},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                            class="page-link">...</a>
+                                    </li>
+                                </th:block>
+                            </th:block>
+
+                            <li th:class="${currentPage < totalPages} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{/admin/orders-management/paginated(page=${currentPage + 1},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                    class="page-link">></a>
+                            </li>
+                            <li th:class="${currentPage < totalPages} ? 'page-item' : 'page-item disabled'">
+                                <a th:href="@{/admin/orders-management/paginated(page=${totalPages},sort=${sort},sortDirection=${sortDirection},minDate=${minDate},maxDate=${maxDate})}"
+                                    class="page-link">--></a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+    <hr class="m-0">
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+</body>
+
+</html>

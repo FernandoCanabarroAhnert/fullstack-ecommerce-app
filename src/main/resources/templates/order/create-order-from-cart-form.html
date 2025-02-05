@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Compra</title>
+    <!--Bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!--Javascript do Bootstrap-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+    <header th:replace="~{fragments/header::header}"></header>
+    <main>
+        <section class="container-fluid" id="breadcrumb-section">
+            <div class="container">
+                <nav>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/products-grid}">Shop</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/carts/my-cart}">Meu Carrinho</a></li>
+                        <li class="breadcrumb-item active"><a href="#">Tela de Checkout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section>
+
+        <section class="container" id="cart-section">
+            <div class="row">
+                <h2>Comprar Itens</h2>
+                <div class="table-responsive">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 15%;">Imagem</th>
+                                <th scope="col" style="width: 30%;">Nome</th>
+                                <th scope="col" style="width: 12.5%;">Preço</th>
+                                <th scope="col" style="width: 22.5%;">Quantidade</th>
+                                <th scope="col" style="width: 12.5%;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="orderItem : ${orderItems}">
+                                <td>
+                                    <img th:src="${orderItem.image}" alt="" class="img-fluid" data-fancybox>
+                                </td>
+                                <td th:text="${orderItem.name}" style="text-align: center;" class="product-name"></td>
+                                <td th:text="'R$' + ${orderItem.price}" style="text-align: center;"></td>
+                                <td th:text="${orderItem.quantity}" style="text-align: center;"></td>
+                                <td th:text="'R$' + ${orderItem.getSubTotal()}" style="text-align: center;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="total-price-div d-flex justify-content-end">
+                    <h4 th:text="'Valor total: R$' + ${totalOrderValue}"></h4>
+                </div>
+            </div>
+        </section>
+        <section class="container mt-4" id="order-section">
+            <div class="row justify-content-center">
+                <form th:action="@{/orders/from-cart}" method="post" th:object="${orderRequestDto}" class="row">
+
+                    <div class="addresses-col col-12 col-md-5">
+                        <h2 class="mb-3">Selecione o Endereço de Entrega:</h2>
+                        <ul class="row gy-3 p-0 flex-column align-items-center">
+                            <li class="card address-card p-0 col-12 col-lg-10" th:each="address, stat : ${addresses}">
+                                <div class="card-header d-flex align-items-center justify-content-start">
+                                    <p class="mb-0" th:text="'#' + ${stat.index + 1}"></p>
+                                </div>
+                                <div class="card-body row">
+                                    <div class="address-input-col col-1 d-flex align-items-center justify-content-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="addressId" th:field="*{addressId}" th:value="${address.id}">
+                                        </div>
+                                    </div>
+                                    <div class="address-info-col row col-11">
+                                        <div class="col-5 mb-2">
+                                            <b>Logradouro:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.logradouro}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Bairro:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.bairro}"></p>
+                                        </div>
+                                        <div class="col-3 mb-2">
+                                            <b>Número:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.numero}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>CEP:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.cep}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Cidade:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.cidade}"></p>
+                                        </div>
+                                        <div class="col-4 mb-2">
+                                            <b>Estado:</b>
+                                            <p class="mb-0" th:text="' ' + ${address.estado}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <p class="text-danger" th:if="${#fields.hasErrors('addressId')}" th:errors="*{addressId}"></p>
+                        <a th:href="@{/addresses/create}" type="button" class="btn-green mb-4 mb-lg-0" style="align-self: flex-end;">
+                            Adicionar <i class="bi bi-plus-lg"></i>
+                        </a>
+                    </div>
+
+                    <div class="payment-method-col col-12 col-md-7">
+                        <h2 class="mb-3">Forma de Pagamento</h2>
+                        <div class="payment-method-inputs d-flex mb-4">
+                            <div class="form-check me-3">
+                                <input type="radio" name="paymentType" id="BOLETO" th:field="*{payment.paymentType}" class="form-check-input payment-type-input"
+                                    value="BOLETO" data-target="#boleto-payment">
+                                <label for="BOLETO" class="form-check-label">Boleto</label>
+                            </div>
+                            <div class="form-check me-3">
+                                <input type="radio" name="paymentType" id="PIX" th:field="*{payment.paymentType}" class="form-check-input payment-type-input"
+                                    value="PIX" data-target="#pix-payment">
+                                <label for="PIX" class="form-check-label">Pix</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" name="paymentType" id="CARTAO" th:field="*{payment.paymentType}" class="form-check-input payment-type-input"
+                                    value="CARTAO" data-target="#credit-card-payment">
+                                <label for="CARTAO" class="form-check-label">Cartão de Crédito</label>
+                            </div>
+                        </div>
+                        <p class="text-danger" th:if="${#fields.hasErrors('payment.paymentType')}" th:errors="*{payment.paymentType}"></p>
+                        <div class="payment-method-detail mb-4" id="pix-payment">
+                            <hr>
+                            <h4 class="text-center">Escaneie o Código QR para pagar</h4>
+                            <div class="pix-instructions-col ps-3 col-10 col-md-8 col-lg-6 d-flex flex-column align-items-start">
+                                <p><img th:src="@{/img/icon-phone.png}" alt=""> Acesse o seu app de pagamentos</p>
+                                <p><img th:src="@{/img/icon-pix.png}" alt=""> Escolha pagar via Pix</p>
+                                <p><img th:src="@{/img/pix-code.png}" alt=""> Escaneie o seguinte código:</p>
+                                <div class="qr-code-row row mb-2 w-100 justify-content-center">
+                                    <img th:src="@{/img/qrcode.png}" alt="">
+                                </div>
+                                <p class="mb-2"><img th:src="@{/img/clock.png}" alt=""> Pague e será creditado na hora</p>
+                            </div>
+                            <hr>
+                            <h3 class="text-center">Ou copie este código para fazer o pagamento:</h3>
+                            <p class="text-muted text-center">Escolha pagar via Pix pelo seu app de pagamentos. 
+                                Depois, cole o seguinte código:</p>
+                            <h5 class="text-center code-heading">08979530dfdsf548700ausgsa
+                                <i onclick="copyText('08979530dfdsf548700ausgaygs0000000',1)" class="bi bi-copy copy-btn" title="Copiar Código"></i>
+                            </h5>
+                            <p class="copy-response-1 d-none mb-2 text-success">Código copiado com sucesso</p>
+                        </div>
+
+                        <div class="payment-method-detail mb-4" id="boleto-payment">
+                            <hr>
+                            <h4 class="text-center">Pagamento via boleto</h4>
+                            <p class="text-center">Para pagar pelo Internet Banking, copie a linha digitável ou escaneie o 
+                                código de barras. Para pagar em qualquer banco, caixa eletrônico ou lotérica, por favor, imprima o boleto.</p>
+                            <img th:src="@{/img/codigo-barra.png}" class="img-fluid col-9 mb-2" alt="">
+                            <h5 class="text-center code-heading">55664.48814 8947.5479 77841.48415 2 8897787000070000 
+                                <i onclick="copyText('55664.48814 8947.5479 77841.48415 2 8897787000070000',2)" class="bi bi-copy copy-btn" title="Copiar Código"></i>
+                            </h5>
+                            <p class="copy-response-2 d-none mb-2 text-success">Código copiado com sucesso</p>
+                            <a th:href="@{/orders/generate-boleto(totalOrderValue=${totalOrderValue})}" target="_blank" class="btn-green mt-3 w-100 text-center"
+                                id="boleto-link">
+                                Imprimir Boleto
+                            </a>
+                            <hr>
+                        </div>
+
+                        <div class="payment-method-detail mb-4" id="credit-card-payment"
+                            th:classappend="${#fields.hasErrors('payment.creditCardId')} ? 'payment-detail-active'">
+                            <hr>
+                            <h4 class="text-center">Pagamento com cartão de crédito</h4>
+                            <ul class="row p-0 gy-3 flex-column align-items-center">
+                                <li class="card p-0 col-12 col-lg-10" th:each="creditCard, stat : ${creditCards}">
+                                    <div class="card-header d-flex align-items-center justify-content-between">
+                                        <p class="mb-0" th:text="'#' + ${stat.index + 1}"></p>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="credit-card-input-col col-1 d-flex align-items-center justify-content-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="creditCardId" th:field="*{payment.creditCardId}" th:value="${creditCard.id}">
+                                            </div>
+                                        </div>
+                                        <div class="credit-card-info row col-11">
+                                            <div class="col-6 mb-2">
+                                                <b>Nome do Titular:</b>
+                                                <p class="mb-0" th:text="' ' + ${creditCard.holderName}"></p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <b>Número do Cartão:</b>
+                                                <p class="mb-0" th:text="' ' + ${creditCard.cardNumber}"></p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <b>Data de Expiração:</b>
+                                                <p class="mb-0" th:text="' ' + ${creditCard.expirationDate}"></p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <b>Bandeira:</b>
+                                                <p class="mb-0" th:text="' ' + ${creditCard.brand}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <p class="text-danger" th:if="${#fields.hasErrors('payment.creditCardId')}" th:errors="*{payment.creditCardId}">Campo Requerido</p>
+                            <a th:href="@{/credit-cards/create}" class="btn-green" style="align-self: flex-end;">
+                                Adicionar <i class="bi bi-plus-lg"></i>
+                            </a>
+                            <hr>
+                            <p th:if="${!creditCards.empty}" style="align-self: flex-start;">Selecione o № de parcelas</p>
+                            <select th:if="${!creditCards.empty}" class="form-select" th:field="*{payment.installmentQuantity}" name="installmentQuantity" id="installmentQuantity">
+                                <option th:each="value, stat : ${installments}"
+                                        th:text="${stat.index + 1} + 'x de R$ ' + ${value}"
+                                        th:value="${stat.index + 1}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="discount-coupons-col col-12 col-md-6">
+                        <h2 class="mt-4">Adicione um Cupom de Desconto:</h2>
+                        <ul class="row ps-0 user-coupons">
+                            <ul class="row gy-3 p-0 flex-column align-items-center">
+                                <li class="card address-card p-0 col-11 col-lg-10" th:each="coupon, stat : ${coupons}">
+                                    <div class="card-header d-flex align-items-center justify-content-start">
+                                        <p class="mb-0" th:text="'#' + ${stat.index + 1}"></p>
+                                    </div>
+                                    <div class="card-body row">
+                                        <div class="coupon-id-input col-1 d-flex align-items-center justify-content-center">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input coupon-id-input" th:id="${coupon.discountCouponId}" name="couponId"
+                                                    th:field="*{discountCouponId}"
+                                                    th:value="${coupon.discountCouponId}"
+                                                    th:data-percentagediscount="${coupon.discountPercentage}"
+                                                    th:data-orderprice="${totalOrderValue}">
+                                            </div>
+                                        </div>
+                                        <div class="coupon-info col-11 row">
+                                            <div class="col-6 mb-2">
+                                                <b>Descrição:</b>
+                                                <p class="mb-0" th:text="' ' + ${coupon.description}"></p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <b>Código:</b>
+                                                <p class="mb-0" th:text="' ' + ${coupon.code}"></p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <b>Desconto:</b>
+                                                <p class="mb-0" th:text="' ' + ${coupon.discountPercentage} + '%'"></p>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <b>Expiração:</b>
+                                                <p class="mb-0" th:text="' ' + ${coupon.expiresAt}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div class="order-summary-col col-12 col-md-6">
+                        <h2 class="mt-4">Resumo da Compra</h2>
+                        <div class="row justify-content-center align-items-center">
+                            <div class="order-summary-container mt-5">
+                                <div class="d-flex">
+                                    <h3 class="first-color">Quantidade:</h3>
+                                    <h3 th:text="' ' + ${orderQuantity}"></h3>
+                                </div>
+                                <div class="d-flex">
+                                    <h3 class="first-color">Valor Total:</h3>
+                                    <h3 th:text="'R$' + ${totalOrderValue}"></h3>
+                                </div>
+                                <div class="d-flex">
+                                    <h3 class="first-color">Desconto:</h3>
+                                    <h3 id="order-summary-price-discount">R$0,00</h3>
+                                </div>
+                                <div class="d-flex">
+                                    <h3 class="first-color">Valor Final:</h3>
+                                    <h3 id="order-summary-final-price" th:text="'R$' + ${totalOrderValue}"></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-green mt-4">Finalizar Compra</button>
+                </form>
+            </div>
+        </section>
+
+
+        <section th:replace="~{fragments/newsletter::newsletter}"></section>
+    </main>
+    <footer th:replace="~{fragments/footer::footer}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+    <script th:src="@{/js/dropdown-menu.js}"></script>
+    <script th:src="@{/js/mobile-menu.js}"></script>
+    <script th:src="@{/js/order.js}"></script>
+</body>
+
+</html>
