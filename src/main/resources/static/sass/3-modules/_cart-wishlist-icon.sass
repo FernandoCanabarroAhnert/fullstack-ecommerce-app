@@ -1,0 +1,21 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+
+.cart-icon,.wishlist-icon
+    right: 1rem
+    bottom: 1.5rem
+    font-size: 1.375rem
+    background-color: variables.$first-color-alt
+    border: 1px solid variables.$border-color
+    border-radius: 50%
+    width: 2.75rem
+    height: 2.75rem
+    color: variables.$first-color
+    @include layouts-mixins.flex-row
+    cursor: pointer
+    transition: .5s ease-in-out
+    z-index: 10
+    &:hover
+        background-color: variables.$first-color
+        color: #FFF

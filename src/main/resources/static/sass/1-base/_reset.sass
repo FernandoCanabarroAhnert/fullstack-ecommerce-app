@@ -1,0 +1,88 @@
+@use 'variables'
+    
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400700&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap')   
+
+*
+    padding: 0
+    margin: 0
+    box-sizing: border-box
+    vertical-align: baseline
+    text-decoration: none
+    list-style: none
+
+h1
+    font-weight: 700
+
+ul 
+    list-style: none
+
+a 
+    text-decoration: none
+
+p
+    line-height: 1.5rem
+
+.no-scroll
+    overflow: hidden
+
+button, textarea, input
+    background-color: transparent
+    border: none
+    outline: none
+
+h1,h2,h3,h4 
+    font-family: variables.$second-font
+    color: variables.$title-color
+    font-weight: variables.$weight-600
+
+main
+    .container
+        margin-top: 2.5rem
+
+.form-floating
+    .form-control,label
+        transition: all .3s ease-in-out
+    input:focus
+        box-shadow: 0px 0px 5px hsl(176, 88%, 27%)
+
+.input-disabled 
+    background-color: #ececec
+    color: #6c757d            
+    cursor: not-allowed    
+    pointer-events: none    
+    border: 1px solid #ced4da
+
+.form-floating
+    width: 100%
+    display: flex
+    .form-control,label
+        transition: all .3s ease-in-out
+    .form-control:focus
+        box-shadow: 0px 0px 5px hsl(176, 88%, 27%)
+    .password-input
+        width: 85%
+        border-top-right-radius: 0
+        border-bottom-right-radius: 0
+    .password-toggle,.password-ack-toggle,.password-register-toggle
+        width: 15%
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: center
+        border-top-left-radius: 0
+        border-bottom-left-radius: 0
+        cursor: pointer
+        i
+            font-size: 1.25rem
+            color: hsl(176, 88%, 27%)
+
+input[type='radio'],input[type='checkbox']
+    cursor: pointer
+
+.order-discount-div
+    border-radius: 8px
+    span
+        color: #FFF
+
+    

@@ -1,0 +1,35 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+    
+.btn-green
+    background-color: variables.$first-color
+    color: #FFF
+    border-radius: 3.5px
+    transition: .4s ease-in-out
+    border: 2px solid variables.$first-color
+    font-size: 1.125rem
+    font-weight: variables.$weight-600
+    padding: .5rem 1rem
+    @include base-mixins.min-768
+        font-size: 1.275rem
+    &:hover
+        background-color: transparent
+        color: variables.$first-color
+        border: 2px solid variables.$first-color
+
+.btn-alt
+    background-color: #000
+    color: #FFF
+    border-radius: 3.5px
+    transition: .4s ease-in-out
+    border: 2px solid #000
+    font-size: 1.125rem
+    font-weight: variables.$weight-600
+    padding: .5rem 1rem
+    @include base-mixins.min-768
+        font-size: 1.275rem
+    &:hover
+        background-color: transparent
+        color: #000
+        border: 2px solid #000

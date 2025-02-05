@@ -1,0 +1,81 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+    
+header .navbar
+    padding: 1.825rem 0
+    .header-left, .header-right
+        @include layouts-mixins.flex-row
+    .header-left
+        .navbar-collapse
+            flex-grow: unset
+            flex-basis: unset
+    .header-right
+        .icons-row
+            @include layouts-mixins.flex-row
+            margin: 0 1.375rem
+            gap: 1.25rem
+            a
+                position: relative 
+                i
+                    color: #000
+                    font-size: 1.5rem
+                    cursor: pointer
+                    transition: .4s ease-in-out
+                    &:hover
+                        color: variables.$first-color
+                .bi-person
+                    font-size: 2rem
+                .icon-quantity
+                    position: absolute
+                    color: #fff
+                    background-color: variables.$first-color
+                    border-radius: 50%
+                    width: 1.25rem
+                    font-size: variables.$small-font-size
+                    @include layouts-mixins.flex-row
+                    right: -10px
+                    top: -6px
+        .navbar-toggler-icon
+            font-size: 1.5rem
+    .mobile-nav
+        position: fixed
+        top: 0
+        left: 0
+        width: 100vw
+        height: 100vh
+        background-color: #fff
+        color: variables.$title-color
+        align-items: flex-start
+        transform: translateX(100%)
+        transition: transform .6s ease-in-out
+        padding: 2rem
+        &-top
+            @include layouts-mixins.flex-row
+            justify-content: space-between
+            margin-bottom: 3rem
+            .close-btn
+                font-size: 1.825rem
+                color: variables.$title-color
+                cursor: pointer
+        &-body
+            @include layouts-mixins.flex-column
+            align-items: flex-start
+            .search-form
+                width: 70%
+                margin-bottom: 2.175rem
+            .navbar-nav
+                margin-left: 0
+                @include layouts-mixins.flex-column
+                align-items: flex-start
+                width: 100%
+                .nav-item a
+                    color: variables.$title-color
+                    font-weight: variables.$weight-700
+                    font-size: variables.$h4-font-size
+                    transition: .4s ease-in-out
+                    &:hover
+                        color: variables.$first-color
+    .mobile-nav.open
+        transform: translateX(0)
+        z-index: 20

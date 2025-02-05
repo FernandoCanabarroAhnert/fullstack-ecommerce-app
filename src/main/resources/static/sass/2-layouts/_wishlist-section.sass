@@ -1,0 +1,57 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+    
+#cart-section
+    h2
+        font-size: 2.5rem
+        margin-bottom: 1.5rem
+    table
+        thead
+            border-top: 1px solid #d6d6d6
+            border-bottom: 1px solid #d6d6d6
+            tr
+                th
+                    text-align: center
+        tbody
+            border-bottom: 1px solid #d6d6d6
+            td
+                font-size: 1.05rem
+            .product-name
+                color: variables.$first-color
+                font-weight: 600
+    img
+        cursor: pointer
+    .delete-cart-icon-btn
+        position: absolute
+        font-size: 1.25rem
+        top: 1rem
+        left: 1rem
+        @include base-mixins.min-768
+            top: 1.5rem
+        @include base-mixins.min-992
+            top: 2.5rem
+        @include base-mixins.min-1200
+            top: 3.5rem
+        @include base-mixins.min-1400
+            top: 4.5rem
+            left: 1.5rem
+
+    .total-price-div
+        h4
+            color: variables.$first-color
+    .cart-icon
+        z-index: 1
+        position: absolute
+        @include base-mixins.min-768
+            right: 1.5rem
+            bottom: 2rem
+        @include base-mixins.min-992
+            right: 3rem
+            bottom: 3.5rem
+        @include base-mixins.min-1200
+            right: 4rem
+            bottom: 4.5rem
+        @include base-mixins.min-1400
+            right: 4.5rem
+            bottom: 5rem

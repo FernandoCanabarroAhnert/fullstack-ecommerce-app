@@ -1,0 +1,51 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+
+main
+    #newsletter
+        margin-top: 2rem
+        padding: 2rem 0
+        background-color: hsl(166, 23%, 74%)
+        .container
+            margin-top: 0
+            .newsletter-title
+                @include layouts-mixins.flex-row
+                color: #000
+                gap: 1rem
+                span
+                    font-weight: variables.$weight-600
+                    font-size: 1.125rem
+                i
+                    font-size: 2.425rem
+            .newsletter-coupon
+                @include layouts-mixins.flex-row
+                margin: .75rem 0 1.25rem
+                span
+                    color: #000
+                    font-weight: variables.$weight-500
+                    font-size: .975rem
+            .newsletter-form
+                form
+                    @include layouts-mixins.flex-row
+                    input
+                        flex-basis: 85%
+                        border-top-right-radius: 0
+                        border-bottom-right-radius: 0
+                        border-right: none
+                        font-size: variables.$large-font-size
+                        padding: .625rem
+                        &:focus
+                            box-shadow: none
+                            border: 1px solid #000
+                    button
+                        flex-basis: 15%
+                        @include layouts-mixins.flex-row
+                        border-top-left-radius: 0
+                        border-bottom-left-radius: 0
+                        border: none
+                        background-color: #000
+                        color: #FFF
+                        cursor: pointer
+                        padding: .625rem
+                        font-size: variables.$large-font-size

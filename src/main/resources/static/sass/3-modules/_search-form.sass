@@ -1,0 +1,27 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+
+.search-form
+    @include layouts-mixins.flex-row
+    input
+        flex-basis: 85%
+        border-top-right-radius: 0
+        border-bottom-right-radius: 0
+        border-right: none
+        font-size: variables.$large-font-size
+        padding: .625rem
+        &:focus
+            box-shadow: none
+            border: 1px solid #000
+    button
+        flex-basis: 15%
+        @include layouts-mixins.flex-row
+        border-top-left-radius: 0
+        border-bottom-left-radius: 0
+        border-left: none
+        background-color: #FFF
+        cursor: pointer
+        padding: .625rem
+        i
+            font-size: variables.$large-font-size

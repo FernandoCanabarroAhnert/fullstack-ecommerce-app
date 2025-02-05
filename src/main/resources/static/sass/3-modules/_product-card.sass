@@ -1,0 +1,46 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+
+.price-div
+    @include layouts-mixins.flex-row
+    justify-content: flex-start
+    gap: .5rem
+    .price
+        color: variables.$first-color
+        font-weight: variables.$weight-600
+    .old-price
+        color: variables.$text-color-light
+        text-decoration: line-through
+
+.product-card
+    border-radius: 15px
+    width: 90%
+    cursor: pointer
+    @include base-mixins.min-768
+        width: 31%
+    @include base-mixins.min-1200
+        width: 24%
+    padding: .625rem
+    img
+        border: 1px solid variables.$border-color
+        border-radius: 15px
+    .product-stars-rating
+        i
+            color: #ffd700
+            font-size: 1.325rem
+    .card-offer-discount
+        position: absolute
+        top: 1.1rem
+        left: 1.1rem
+        background-color: #c51818
+        color: #FFF
+        padding: .25rem
+        border-radius: 5px
+        height: 30px
+    &-subtitle
+        font-size: 1rem
+        color: variables.$text-color-light
+        font-weight: variables.$weight-400
+    .card-icons-row
+        gap: .625rem

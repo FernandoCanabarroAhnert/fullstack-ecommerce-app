@@ -1,0 +1,12 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+    
+.swiper-card
+    a
+        @include layouts-mixins.flex-column
+        border: 1px solid variables.$border-color
+        padding: .625rem
+        border-radius: 15px
+        h4
+            color: variables.$text-color

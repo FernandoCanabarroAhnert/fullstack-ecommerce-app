@@ -1,0 +1,53 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+    
+#product-detail-ratings
+    .product-ratings
+        @include base-mixins.min-768
+            padding-right: 1.5rem
+            border-right: 1px solid #CCC
+        h2
+            font-size: 2.25rem
+        &-list
+            .card
+                .card-header
+                    i
+                        font-size: 2.5rem
+                    .card-rating-user-info
+                        p
+                            font-size: 1.25rem
+                    
+        form
+            position: relative
+            .star-rating
+                position: absolute
+                top: 10%
+                left: 50%
+                transform: translate(-50%,-50%)
+                input
+                    display: none
+                label
+                    float: right
+                    text-align: center
+                    color: #bfbfbf
+                    cursor: pointer
+                    &::before
+                        content: '\f005'
+                        font-family: FontAwesome
+                        display: inline-block
+                        margin: 50px 5px 5px
+                        font-size: 2rem
+                .half::before
+                   content: '\f089'
+                   position: absolute 
+            .star-rating>[id^='star']:checked~label,
+            .star-rating:not(:checked)>label:hover,
+            .star-rating:not(:checked)>label:hover~label
+                color: #ffd700
+            label[for='description']
+                margin-top: 2rem
+            p.text-danger
+                margin-top: 4.5rem
+            p.text-danger~label[for='description']
+                margin-top: 0

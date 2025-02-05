@@ -1,0 +1,45 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+
+#footer
+    margin-top: 2.5rem
+    margin-bottom: 2rem
+    @include base-mixins.min-992
+        margin-bottom: unset
+    .footer-contact
+        @include layouts-mixins.flex-column
+        align-items: flex-start
+        a img
+            width: 10rem
+            margin-bottom: 1rem
+        h4
+            color: variables.$text-color-light
+            font-size: 1.25rem
+        span
+            font-weight: variables.$weight-600
+            color: variables.$text-color
+        p
+            margin-bottom: .5rem
+            color: #000
+            font-size: 1rem
+            span
+                font-weight: variables.$weight-600
+                color: #000
+        .social-icons
+            margin-top: .325rem
+            padding-left: 0
+            @include layouts-mixins.flex-row
+            gap: .375rem
+            i
+                font-size: .875rem
+    .footer-info
+        p
+            color: #000
+            font-size: 1.25rem
+        ul
+            padding-left: 0
+            li a
+                font-size: .925rem
+                margin-bottom: 1rem
+                color: variables.$text-color

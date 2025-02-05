@@ -1,0 +1,18 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+
+.navbar-nav
+    @include layouts-mixins.flex-row
+    margin-left: 1.25rem
+    gap: 1.5rem
+    .nav-item a
+        color: variables.$title-color
+        font-weight: variables.$weight-700
+        font-size: variables.$normal-font-size
+        transition: .4s ease-in-out
+        &:hover
+            color: variables.$first-color
+.navbar-brand
+    img
+        width: 7.5rem

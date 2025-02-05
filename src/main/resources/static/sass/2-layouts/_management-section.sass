@@ -1,0 +1,63 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+
+.management-section
+    h2
+        font-size: 2.5rem
+        margin-bottom: 1.5rem
+    .categories-table, .brands-table
+        width: 50%
+    table
+        thead
+            tr
+                th
+                    a
+                        color: #FFF
+
+.modal-body, .modal-footer
+    @include layouts-mixins.flex-row
+
+.bi-check2-square, .bi-x-square
+    position: absolute
+    font-size: 2rem
+    right: 2rem
+    top: .25rem
+
+.actions-row
+    margin-bottom: 1rem
+    .export-row
+        gap: .625rem
+        .export-btn
+            gap: .625rem
+            display: flex
+            align-items: center
+            i
+                font-size: 1.375rem
+
+.incr-decr-div
+    gap: .625rem
+.increase-btn, .decrease-btn
+    color: #fff
+    cursor: pointer
+    width: 1.75rem
+    height: 1.75rem
+    display: flex
+    align-items: center
+    justify-content: center
+    border-radius: 5px
+    font-size: 1.25rem
+.decrease-btn
+    background-color: #dc3545
+.decrease-btn.disabled
+    background-color: #d6d6d6
+    cursor: not-allowed
+.increase-btn
+    background-color: #0d6efd
+
+.order-date-form
+    display: flex
+    align-items: center
+    gap: .825rem
+    button
+        align-self: flex-end

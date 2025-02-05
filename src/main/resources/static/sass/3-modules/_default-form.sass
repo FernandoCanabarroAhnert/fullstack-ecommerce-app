@@ -1,0 +1,16 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use '../2-layouts/layouts-mixins'
+
+.default-form
+    box-shadow: .5px 10px 10px rgba(0,0,0,.2)
+    border: 1px solid #ebebeb
+    border-radius: 10px
+    padding: 1.5rem
+    background-color: #ebebeb
+    .form-control,label
+        transition: all .3s ease-in-out
+    .form-control:focus
+        box-shadow: 0px 0px 5px hsl(176, 88%, 27%)
+    button[type='submit']
+        margin-top: 1rem

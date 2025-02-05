@@ -1,0 +1,16 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+
+#breadcrumb-section
+    background-color: hsl(166, 23%, 74%)
+    padding: 2rem 0
+    .container
+        margin-top: 0
+        .breadcrumb
+            @include layouts-mixins.flex-row
+            justify-content: flex-start
+            margin-bottom: 0
+            li a
+                font-size: 1rem
+                color: variables.$title-color

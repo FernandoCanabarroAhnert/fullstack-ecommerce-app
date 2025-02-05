@@ -1,0 +1,33 @@
+@use '../1-base/_variables'
+@use '../1-base/_base-mixins'
+@use 'layouts-mixins'
+
+#product-detail
+    .detail-col
+        h2
+            font-size: 3.25rem
+            margin-bottom: 0
+        .product-stars-rating
+            i
+                color: #ffd700
+                font-size: 2.325rem
+                cursor: pointer
+            p
+                font-size: 1.375rem
+        .price-div
+            gap: 1rem
+            .price
+                font-size: 1.875rem
+                margin-bottom: 0
+            .old-price
+                font-size: 1.2rem
+        .btn-div
+            @include layouts-mixins.flex-row
+            gap: 1rem
+            justify-content: flex-start
+    .img-col
+        .main-img
+                width: 100%
+        img
+            border: 1px solid #bbbbbb
+            cursor: pointer
