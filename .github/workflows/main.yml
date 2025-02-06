@@ -1,0 +1,74 @@
+name: Continuous Integration with Github Actions
+
+on:
+  push:
+    branches: 
+      - main 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+        SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+
+    steps:
+    - name: Analisar o Código
+      uses: actions/checkout@v3
+    
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        
+    - name: Setup Java JDK 21
+      uses: actions/setup-java@v3
+      with:
+         java-version: 21
+         distribution: 'corretto'
+         cache: maven
+
+    - name: Build Application Jar
+      working-directory: ./
+      run: mvn clean install -DskipTests
+
+    - name: Construir Imagem do Docker
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        dockerfile: Dockerfile
+        secrets: |
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        push: false
+        tags: |
+          ${{ secrets.DOCKER_HUB_USERNAME }}/fullstack-ecommerce-app:latest 
+          ${{ secrets.DOCKER_HUB_USERNAME }}/fullstack-ecommerce-app:${{ github.run_id }}
+
+    - name: Docker Compose Build
+      working-directory: ./docker
+      run: |
+        docker compose -f docker-compose-prod.yml build \
+          --build-arg SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }} \
+          --build-arg DATABASE_URL=${{secrets.DATABASE_URL}} \
+          --build-arg DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
+          --build-arg DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} 
+
+    - name: Push to Docker Hub Container Registry
+      run: |
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/fullstack-ecommerce-app:latest ${{ secrets.DOCKER_HUB_USERNAME }}/fullstack-ecommerce-app:${{ github.run_id }}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fullstack-ecommerce-app:${{ github.run_id }}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/fullstack-ecommerce-app:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull Image from docker hub
+        run: sudo docker pull fernandocanabarroahnert/fullstack-ecommerce-app:latest
+      - name: Delete old container
+        run: sudo docker rm -f fullstack-ecommerce-app
+      - name: Run docker container
+        run: sudo docker run -d -p 8080:8080 --name fullstack-ecommerce-app fernandocanabarroahnert/fullstack-ecommerce-app
